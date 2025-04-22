@@ -1,0 +1,25 @@
+<div class="admin-dashboard-container">
+    <nav class="sidebar">
+      <ul>
+        <li>
+            <a routerLink="list-clients" routerLinkActive="active">Liste des clients</a>
+        </li>
+        <li>
+            <a routerLink="list-livreurs" routerLinkActive="active">Liste des livreurs</a>
+        </li>
+        <li>
+          <a routerLink="add-livreur" routerLinkActive="active">Ajouter un livreur</a>
+        </li>
+        <li>
+          <a routerLink="categories" routerLinkActive="active">Gestion des catégories</a>
+        </li>
+        <li>
+          <a routerLink="produits" routerLinkActive="active">Gestion des produits</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="content">
+      <!-- Espace pour afficher les composants enfants -->
+      <router-outlet></router-outlet>
+    </div>
+  </div>

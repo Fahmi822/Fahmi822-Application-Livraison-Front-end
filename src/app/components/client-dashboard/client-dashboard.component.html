@@ -1,0 +1,37 @@
+<div class="client-dashboard">
+    <h1>Bienvenue sur votre espace client</h1>
+    
+    <div class="filters">
+      <div class="filter-group">
+        <label for="categorie">Filtrer par catégorie:</label>
+        <select id="categorie" [(ngModel)]="selectedCategorieId" (change)="filterProduits()">
+          <option value="0">Toutes les catégories</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="search">Rechercher:</label>
+        <input 
+          type="text" 
+          id="search" 
+          [(ngModel)]="searchTerm" 
+          (input)="filterProduits()" 
+          placeholder="Nom ou description">
+      </div>
+    </div>
+  
+    <div class="produits-grid">
+      <div *ngFor="let produit of filteredProduits" class="produit-card">
+        <h3>{{ produit.nom }}</h3>
+        <p class="description">{{ produit.description }}</p>
+        <p class="prix">{{ produit.prix | currency:'EUR':'symbol':'1.2-2' }}</p>
+        <p class="categorie">Catégorie: {{ getCategorieName(produit.categorieId) }}</p>
+        <button (click)="addToCart(produit)">Ajouter au panier</button>
+      </div>
+    </div>
+  
+    <div *ngIf="filteredProduits.length === 0" class="no-results">
+      Aucun produit ne correspond à vos critères de recherche.
+    </div>
+  </div>

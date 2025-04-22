@@ -1,0 +1,78 @@
+<div class="container-xxl py-5">
+    <div class="container">
+      <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+        <h1 class="section-title ff-secondary text-primary fw-normal">Gestion des Catégories</h1>
+        <h2 class="mb-5">Ajouter ou Modifier une Catégorie</h2>
+      </div>
+  
+      <!-- Formulaire d'ajout -->
+      <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.2s">
+        <div class="col-lg-6 mb-4">
+          <div class="p-4 border rounded bg-light shadow">
+            <h4 class="mb-4 text-center text-primary">Ajouter une Catégorie</h4>
+            <form (ngSubmit)="addCategorie()">
+              <div class="mb-3">
+                <label for="nom" class="form-label">Nom:</label>
+                <input type="text" class="form-control" [(ngModel)]="newCategorie.nom" name="nom" required />
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <textarea class="form-control" [(ngModel)]="newCategorie.description" name="description" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+            </form>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Formulaire de modification -->
+      <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.3s" *ngIf="selectedCategorie">
+        <div class="col-lg-6 mb-4">
+          <div class="p-4 border rounded bg-warning-subtle shadow">
+            <h4 class="mb-4 text-center text-warning">Modifier une Catégorie</h4>
+            <form (ngSubmit)="updateCategorie()">
+              <div class="mb-3">
+                <label class="form-label">Nom:</label>
+                <input type="text" class="form-control" [(ngModel)]="selectedCategorie.nom" name="editNom" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Description:</label>
+                <textarea class="form-control" [(ngModel)]="selectedCategorie.description" name="editDescription" rows="3"></textarea>
+              </div>
+              <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-warning">Mettre à jour</button>
+                <button type="button" class="btn btn-secondary" (click)="selectedCategorie = null">Annuler</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Liste des catégories -->
+      <div class="table-responsive wow fadeInUp" data-wow-delay="0.4s">
+        <h3 class="mb-4 text-center">Liste des Catégories</h3>
+        <table class="table table-bordered table-hover text-center align-middle">
+          <thead class="bg-primary text-white">
+            <tr>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cat of categories">
+              <td>{{ cat.id }}</td>
+              <td>{{ cat.nom }}</td>
+              <td>{{ cat.description }}</td>
+              <td>
+                <button class="btn btn-sm btn-warning me-2" (click)="editCategorie(cat)">Modifier</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteCategorie(cat.id)">Supprimer</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

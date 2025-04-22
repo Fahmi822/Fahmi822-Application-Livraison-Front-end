@@ -1,0 +1,36 @@
+<div class="container-xxl py-5">
+  <div class="container">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+      <h1 class="section-title ff-secondary text-center text-primary fw-normal">Gestion des Livreurs</h1>
+      <h2 class="mb-5">Ajouter un Livreur</h2>
+    </div>
+
+    <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.3s">
+      <div class="col-lg-6">
+        <form (ngSubmit)="onSubmit()" class="p-4 border rounded bg-light shadow">
+          <div class="mb-3">
+            <label for="nom" class="form-label">Nom :</label>
+            <input type="text" id="nom" [(ngModel)]="livreurData.nom" name="nom" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email :</label>
+            <input type="email" id="email" [(ngModel)]="livreurData.email" name="email" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="tel" class="form-label">Téléphone :</label>
+            <input type="text" id="tel" [(ngModel)]="livreurData.tel" name="tel" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="mdp" class="form-label">Mot de passe :</label>
+            <input type="password" id="mdp" [(ngModel)]="livreurData.mdp" name="mdp" class="form-control" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

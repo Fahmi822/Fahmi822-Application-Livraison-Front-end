@@ -1,0 +1,32 @@
+/* Style de base pour le composant */
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .card-header {
+    font-weight: bold;
+  }
+  
+  .img-thumbnail {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+  }
+  
+  .table img {
+    max-height: 50px;
+  }
+  
+  .invalid-feedback {
+    display: block;
+    color: #dc3545;
+  }
+  
+  .is-invalid {
+    border-color: #dc3545;
+  }
+  
+  .btn {
+    margin-right: 5px;
+  }
