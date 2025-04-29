@@ -1,0 +1,32 @@
+<div class="produits-section">
+  <!-- Sélecteur de catégorie -->
+  <mat-form-field appearance="fill" class="categorie-select">
+    <mat-label>Catégorie</mat-label>
+    <mat-select [(ngModel)]="selectedCategorieId" (selectionChange)="loadProduits()">
+      <mat-option [value]="null">Toutes les catégories</mat-option>
+      <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Grille des produits -->
+  <div class="produits-grid">
+    <mat-card class="produit-card" *ngFor="let p of produits">
+      <img mat-card-image [src]="p.imageUrl" alt="{{ p.nom }}">
+      
+      <mat-card-title>{{ p.nom }}</mat-card-title>
+      
+      <mat-card-subtitle>{{ p.prix | currency:'EUR':'symbol':'1.2-2' }}</mat-card-subtitle>
+      
+      <mat-card-content>
+        <p>{{ p.description }}</p>
+      </mat-card-content>
+      
+      <mat-card-actions align="end">
+        <button mat-raised-button color="primary" (click)="addToOrder(p)">
+          Ajouter au panier
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+

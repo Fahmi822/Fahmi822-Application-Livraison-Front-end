@@ -104,4 +104,23 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+  
+
+
+getClientId(): number | null {
+  const token = this.getToken();
+  if (token) {
+    try {
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return decodedToken.ClientId || decodedToken.clientId || null;
+    } catch (error) {
+      console.error('Erreur lors du décodage du token', error);
+      return null;
+    }
+  }
+  return null;
+}
+
+
+
 }

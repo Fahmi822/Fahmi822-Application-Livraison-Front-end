@@ -1,0 +1,35 @@
+<div class="profile-container">
+    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="nom">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="tel">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Adresse</mat-label>
+        <input matInput formControlName="adresse">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="mdp">
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
+        Mettre à jour
+      </button>
+  
+    </form>
+  </div>
+cd ..  

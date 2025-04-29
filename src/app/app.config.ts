@@ -4,7 +4,8 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http'; // Pour HttpClient
 import { authInterceptor } from './interceptors/auth.interceptor'; // Utiliser la fonction authInterceptor
 import { provideAnimations } from '@angular/platform-browser/animations'; // Pour les animations (optionnel)
-import { provideToastr } from 'ngx-toastr'; // Pour les notifications (optionnel) 
+import { provideToastr } from 'ngx-toastr';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'; // Pour les notifications (optionnel) 
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +26,6 @@ export const appConfig: ApplicationConfig = {
       timeOut: 3000, // Durée d'affichage des notifications
       positionClass: 'toast-bottom-right', // Position des notifications
       preventDuplicates: true, // Empêcher les doublons
-    }),
+    }), provideAnimationsAsync(),
   ],
 };

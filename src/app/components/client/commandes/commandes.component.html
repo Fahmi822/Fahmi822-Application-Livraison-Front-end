@@ -1,0 +1,25 @@
+<div class="commandes-container" *ngIf="commandes.length > 0">
+  <h3>Mes Commandes</h3>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let commande of commandes">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Commande du {{ commande.dateCommande | date:'shortDate' }} - {{ commande.montant | currency:'EUR' }}
+        </mat-panel-title>
+        <mat-panel-description>
+          Statut : {{ commande.statut }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <ul>
+        <li *ngFor="let produit of commande.produits">
+          {{ produit.nom }} - {{ produit.prix | currency:'EUR' }}
+        </li>
+      </ul>
+      <button *ngIf="commande.statut !== 'Annulée'" 
+        mat-button 
+        color="warn" 
+        (click)="annulerCommande(commande.id)">Annuler cette commande </button>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

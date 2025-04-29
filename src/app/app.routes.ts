@@ -10,6 +10,10 @@ import { ListLivreursComponent } from './components/admin/list-livreurs/list-liv
 import { AddLivreurComponent } from './components/admin/add-livreur/add-livreur.component';
 import { CategoriesComponent } from './components/admin/categories/categories.component';
 import { ProduitsComponent } from './components/admin/produits/produits.component';
+import { ProfileComponent } from './components/client/profile/profile.component';
+import { ClientProduitsComponent } from './components/client/client-produits/client-produits.component';
+import { CommandesComponent } from './components/client/commandes/commandes.component';
+import { PanierComponent } from './components/client/panier/panier.component';
 import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
@@ -39,8 +43,15 @@ export const routes: Routes = [
   {
     path: 'client-dashboard',
     component: ClientDashboardComponent,
-    canActivate: [RoleGuard], // Appliquer le garde
-    data: { role: 'Client' }, // Rôle requis
+    canActivate: [RoleGuard],
+    data: { role: 'Client' },
+    children: [
+      { path: 'client-produits', component: ClientProduitsComponent },
+      { path: 'commandes', component: CommandesComponent },
+      { path: 'panier', component: PanierComponent },
+      { path: 'profile', component: ProfileComponent },
+
+    ]
   },
   {
     path: 'livreur-dashboard',

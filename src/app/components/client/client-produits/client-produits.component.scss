@@ -1,0 +1,123 @@
+.client-dashboard-container {
+    display: flex;
+    height: 100vh; /* La hauteur de l'écran prend toute la hauteur de la fenêtre */
+    
+    .sidenav-container {
+      display: flex;
+      height: 100%; /* L'ensemble du conteneur doit avoir la même hauteur que l'écran */
+    }
+  
+    mat-sidenav {
+      background-color: #2f2f2f; /* Couleur de fond du sidenav */
+      color: #fff; /* Couleur du texte dans le sidenav */
+      width: 250px; /* Largeur du sidenav */
+      padding-top: 20px; /* Espacement en haut du sidenav */
+    }
+  
+    mat-nav-list {
+      display: flex;
+      flex-direction: column; /* Alignement des éléments du menu en colonne */
+      margin-top: 20px;
+  
+      a {
+        color: #fff; /* Couleur du texte pour les liens */
+        padding: 12px 16px;
+        font-size: 16px;
+        text-decoration: none;
+  
+        &:hover {
+          background-color: #444; /* Couleur de fond au survol */
+          cursor: pointer; /* Curseur de la souris au survol */
+        }
+  
+        &.active {
+          background-color: #1976d2; /* Couleur de fond pour l'élément actif */
+          font-weight: bold; /* Mettre en gras l'élément actif */
+        }
+      }
+    }
+  
+    .logout-section {
+      position: absolute; /* Position absolue pour la section de déconnexion */
+      bottom: 20px; /* Aligne la section en bas du sidenav */
+      left: 16px;
+      width: 100%; /* Largeur à 100% pour occuper toute la largeur du sidenav */
+  
+      button {
+        color: #fff; /* Couleur du texte pour le bouton */
+        width: 100%;
+        text-align: left; /* Aligne le texte du bouton à gauche */
+        padding: 12px 16px;
+        background-color: #d32f2f; /* Couleur de fond du bouton */
+        border: none;
+        border-radius: 4px; /* Arrondir les coins du bouton */
+  
+        &:hover {
+          background-color: #c62828; /* Couleur au survol du bouton */
+        }
+      }
+    }
+  
+    mat-sidenav-content {
+      flex: 1;
+      padding: 20px;
+      background-color: #f4f4f4; /* Couleur de fond du contenu principal */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .content {
+      width: 100%;
+      max-width: 1200px; /* Limite la largeur du contenu à 1200px */
+    }
+  }
+  .produits-section {
+    padding: 20px;
+  
+    mat-form-field {
+      width: 250px;
+      margin-bottom: 20px;
+    }
+  
+    .produits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+  
+    .produit-card {
+      max-width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+  
+      mat-card-image {
+        height: 150px;
+        object-fit: cover;
+      }
+  
+      mat-card-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+  
+      mat-card-subtitle {
+        color: #666;
+        font-size: 14px;
+      }
+  
+      mat-card-content {
+        font-size: 14px;
+        margin-top: 10px;
+        flex-grow: 1;
+      }
+  
+      mat-card-actions {
+        margin-top: auto;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+  }
+  

@@ -1,0 +1,47 @@
+.client-dashboard-container {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidenav-container {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+mat-sidenav {
+  width: 220px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: white;
+}
+
+mat-sidenav a {
+  color: white;
+  font-weight: bold;
+}
+
+mat-sidenav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logout-section {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+mat-sidenav-content {
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+}
+
+.content {
+  min-height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+}

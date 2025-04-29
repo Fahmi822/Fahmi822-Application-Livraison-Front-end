@@ -1,0 +1,28 @@
+<div class="panier-container">
+  <h2>Mon Panier</h2>
+
+  <!-- Affichage du panier -->
+  <div *ngIf="order.length > 0; else panierVide">
+    <div *ngFor="let produit of order">
+      <div class="panier-item">
+        <span>{{ produit.nom }}</span>
+        <span>{{ produit.prix }} €</span>
+        
+        <!-- Bouton de suppression du produit -->
+        <button mat-button color="warn" (click)="retirerProduit(produit)">Retirer</button>
+      </div>
+    </div>
+
+    <div class="total">
+      <h3>Total: {{ total }} €</h3>
+    </div>
+
+    <!-- Bouton pour passer la commande -->
+    <button mat-raised-button color="primary" (click)="passerCommande()">Passer la commande</button>
+  </div>
+
+  <!-- Si le panier est vide -->
+  <ng-template #panierVide>
+    <p>Votre panier est vide.</p>
+  </ng-template>
+</div>

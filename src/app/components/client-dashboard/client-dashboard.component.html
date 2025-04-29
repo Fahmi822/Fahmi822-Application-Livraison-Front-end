@@ -1,37 +1,21 @@
-<div class="client-dashboard">
-    <h1>Bienvenue sur votre espace client</h1>
-    
-    <div class="filters">
-      <div class="filter-group">
-        <label for="categorie">Filtrer par catégorie:</label>
-        <select id="categorie" [(ngModel)]="selectedCategorieId" (change)="filterProduits()">
-          <option value="0">Toutes les catégories</option>
-          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
-        </select>
+<div class="client-dashboard-container">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened>
+      <mat-nav-list>
+        <a mat-list-item routerLink="client-produits" routerLinkActive="active">Produits</a>
+        <a mat-list-item routerLink="commandes" routerLinkActive="active">Commandes</a>
+        <a mat-list-item routerLink="panier" routerLinkActive="active">Panier</a>
+        <a mat-list-item routerLink="profile" routerLinkActive="active">Profil</a>
+      </mat-nav-list>
+      <div class="logout-section">
+        <button mat-button (click)="logout()">Déconnexion</button>
       </div>
-      
-      <div class="filter-group">
-        <label for="search">Rechercher:</label>
-        <input 
-          type="text" 
-          id="search" 
-          [(ngModel)]="searchTerm" 
-          (input)="filterProduits()" 
-          placeholder="Nom ou description">
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="content">
+        <router-outlet></router-outlet>
       </div>
-    </div>
-  
-    <div class="produits-grid">
-      <div *ngFor="let produit of filteredProduits" class="produit-card">
-        <h3>{{ produit.nom }}</h3>
-        <p class="description">{{ produit.description }}</p>
-        <p class="prix">{{ produit.prix | currency:'EUR':'symbol':'1.2-2' }}</p>
-        <p class="categorie">Catégorie: {{ getCategorieName(produit.categorieId) }}</p>
-        <button (click)="addToCart(produit)">Ajouter au panier</button>
-      </div>
-    </div>
-  
-    <div *ngIf="filteredProduits.length === 0" class="no-results">
-      Aucun produit ne correspond à vos critères de recherche.
-    </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
   </div>
