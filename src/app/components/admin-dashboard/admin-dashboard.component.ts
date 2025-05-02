@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AdminDashboardComponent {
   constructor(private authService: AuthService) {}
-
+  
   logout() {
     this.authService.logout();
   }

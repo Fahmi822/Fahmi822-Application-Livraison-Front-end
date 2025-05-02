@@ -13,6 +13,7 @@ import { ProduitsComponent } from './components/admin/produits/produits.componen
 import { ProfileComponent } from './components/client/profile/profile.component';
 import { ClientProduitsComponent } from './components/client/client-produits/client-produits.component';
 import { CommandesComponent } from './components/client/commandes/commandes.component';
+import { DashboardHomeComponent } from './components/admin/dashboard-home/dashboard-home.component';
 import { AdminCommandesComponent  } from './components/admin/admin-commandes/admin-commandes.component';
 import { PanierComponent } from './components/client/panier/panier.component';
 import { RoleGuard } from './guards/role.guard';
@@ -29,6 +30,7 @@ export const routes: Routes = [
     canActivate: [RoleGuard], // Appliquer le garde
     data: { role: 'Admin' }, // Rôle requis
     children: [
+      { path: '', component: DashboardHomeComponent },
       {
         path: 'add-livreur',component: AddLivreurComponent,},
       {
