@@ -13,8 +13,11 @@ import { ProduitsComponent } from './components/admin/produits/produits.componen
 import { ProfileComponent } from './components/client/profile/profile.component';
 import { ClientProduitsComponent } from './components/client/client-produits/client-produits.component';
 import { CommandesComponent } from './components/client/commandes/commandes.component';
+import { AdminCommandesComponent  } from './components/admin/admin-commandes/admin-commandes.component';
 import { PanierComponent } from './components/client/panier/panier.component';
 import { RoleGuard } from './guards/role.guard';
+
+
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Page d'accueil
@@ -37,7 +40,8 @@ export const routes: Routes = [
       {
         path: 'produits', component: ProduitsComponent },
       { 
-        path: 'produits/categorie/:id', component: ProduitsComponent }
+        path: 'produits/categorie/:id', component: ProduitsComponent },
+      { path: 'commandes',component: AdminCommandesComponent        }
     ],
   },
   {

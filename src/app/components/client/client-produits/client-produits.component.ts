@@ -22,6 +22,7 @@ export class ClientProduitsComponent implements OnInit {
   produits: Produit[] = [];
   categories: any[] = [];
   selectedCategorieId: number | null = null;
+  isLoading: boolean = false;
 
   constructor(private produitService: ProduitService) {}
 

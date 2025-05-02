@@ -28,6 +28,12 @@ export class AuthService {
         })
       );
   }
+  getHeaders() {
+    const token = this.getToken();
+    return new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+  }
   
   registerLivreur(livreurData: any): Observable<any> {
     // Récupérer le token JWT depuis le localStorage

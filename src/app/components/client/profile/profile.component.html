@@ -1,35 +1,145 @@
-<div class="profile-container">
-    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
-  
-      <mat-form-field appearance="fill">
-        <mat-label>Nom</mat-label>
-        <input matInput formControlName="nom">
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email">
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill">
-        <mat-label>Téléphone</mat-label>
-        <input matInput formControlName="tel">
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill">
-        <mat-label>Adresse</mat-label>
-        <input matInput formControlName="adresse">
-      </mat-form-field>
-  
-      <mat-form-field appearance="fill">
-        <mat-label>Mot de passe</mat-label>
-        <input matInput type="password" formControlName="mdp">
-      </mat-form-field>
-  
-      <button mat-raised-button color="primary" type="submit" [disabled]="profileForm.invalid">
-        Mettre à jour
-      </button>
-  
-    </form>
+<div class="container-xxl py-5">
+  <div class="container">
+    <!-- État de chargement -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement du profil...</span>
+      </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div *ngIf="!isLoading" class="wow fadeInUp" data-wow-delay="0.1s">
+      <h1 class="section-title ff-secondary text-center text-primary fw-normal">Mon Profil</h1>
+      
+      <form (ngSubmit)="updateProfile()" #form="ngForm" class="row g-4 mx-auto" style="max-width: 600px;">
+        <!-- Nom -->
+        <div class="col-12">
+          <label for="nom" class="form-label fw-medium">Nom</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+            <input 
+              [(ngModel)]="userData.nom" 
+              name="nom" 
+              required 
+              class="form-control" 
+              id="nom"
+              placeholder="Votre nom" />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-12">
+          <label for="email" class="form-label fw-medium">Email</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+            <input 
+              [(ngModel)]="userData.email" 
+              name="email" 
+              type="email" 
+              required 
+              class="form-control" 
+              id="email"
+              placeholder="exemple@email.com" />
+          </div>
+        </div>
+
+        <!-- Téléphone -->
+        <div class="col-12">
+          <label for="tel" class="form-label fw-medium">Téléphone</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+            <input 
+              [(ngModel)]="userData.tel" 
+              name="tel" 
+              class="form-control" 
+              id="tel"
+              placeholder="+33 6 12 34 56 78" />
+          </div>
+        </div>
+
+        <!-- Adresse -->
+        <div class="col-12">
+          <label for="adresse" class="form-label fw-medium">Adresse</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+            <input 
+              [(ngModel)]="userData.adresse" 
+              name="adresse" 
+              class="form-control" 
+              id="adresse"
+              placeholder="123 Rue Exemple, Ville" />
+          </div>
+        </div>
+
+        <!-- Véhicule -->
+        <div class="col-12">
+          <label for="vehicule" class="form-label fw-medium">Véhicule</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-car-front-fill"></i></span>
+            <input 
+              [(ngModel)]="userData.vehicule" 
+              name="vehicule" 
+              class="form-control" 
+              id="vehicule"
+              placeholder="Modèle et marque" />
+          </div>
+        </div>
+
+        <!-- Image de profil -->
+        <div class="col-12">
+          <label for="image" class="form-label fw-medium">Image de profil</label>
+          <div class="d-flex flex-column gap-2">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-image-fill"></i></span>
+              <input 
+                type="file" 
+                (change)="onImageSelected($event)" 
+                accept="image/*" 
+                class="form-control" 
+                id="image" />
+            </div>
+            <div *ngIf="imagePreview" class="d-flex align-items-center gap-3 mt-2">
+              <img [src]="imagePreview" alt="Aperçu image" class="img-thumbnail rounded-circle" width="80" height="80" />
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="imagePreview = null; userData.image = null">
+                <i class="bi bi-trash"></i> Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="col-12">
+          <label for="mdp" class="form-label fw-medium">Mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              [(ngModel)]="userData.mdp" 
+              name="mdp" 
+              class="form-control" 
+              id="mdp"
+              placeholder="Laissez vide si inchangé" />
+            <button type="button" class="btn btn-outline-secondary" (click)="showPassword = !showPassword">
+              <i class="bi" [class.bi-eye-fill]="!showPassword" [class.bi-eye-slash-fill]="showPassword"></i>
+            </button>
+          </div>
+          <small class="text-muted">Minimum 8 caractères avec chiffres et lettres</small>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <div class="col-12 text-center mt-4">
+          <button type="submit" class="btn btn-primary px-4 py-2" [disabled]="form.invalid">
+            <i class="bi bi-check-circle-fill me-2"></i>Enregistrer les modifications
+          </button>
+        </div>
+
+        <!-- Message de retour -->
+        <div *ngIf="message" class="col-12">
+          <div class="alert alert-success text-center mt-3 mb-0">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
-cd ..  
+</div>

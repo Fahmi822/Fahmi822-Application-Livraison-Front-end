@@ -1,49 +1,66 @@
-// === commandes.component.ts ===
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatButtonModule } from '@angular/material/button';
 import { CommandeService } from '../../../services/commande.service';
-import { AuthService } from '../../../services/auth.service'; // <-- ajoute ceci
-
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-commandes',
   standalone: true,
-  imports: [CommonModule, MatExpansionModule, MatButtonModule],
+  imports: [CommonModule],
   templateUrl: './commandes.component.html',
   styleUrls: ['./commandes.component.scss']
-
 })
 export class CommandesComponent implements OnInit {
-  @Input() clientId: number | null = null;
   commandes: any[] = [];
+  isLoading: boolean = true;
+  errorMessage: string = '';
 
-  constructor(private commandeService: CommandeService,private authService: AuthService) {}
+  constructor(
+    private commandeService: CommandeService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    const clientId = this.authService.getClientId(); // <-- utilise le token JWT
-    console.log('Client ID:', clientId); // debug
+    this.loadCommandes();
+  }
 
+  loadCommandes(): void {
+    const clientId = this.authService.getClientId();
+    
     if (clientId) {
-      this.commandeService.getCommandesByClient(clientId).subscribe((data) => {
-        console.log('Commandes reçues:', data); // debug
-        this.commandes = data;
+      this.isLoading = true;
+      this.commandeService.getCommandesByClient(clientId).subscribe({
+        next: (data) => {
+          this.commandes = data;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.errorMessage = 'Erreur lors du chargement des commandes';
+          this.isLoading = false;
+          console.error(err);
+        }
       });
+    } else {
+      this.errorMessage = 'Client non identifié';
+      this.isLoading = false;
     }
   }
+
   annulerCommande(commandeId: number): void {
-    this.commandeService.annulerCommande(commandeId).subscribe({
-      next: (response) => {
-        console.log('Commande annulée:', response);
-        // Après annulation, recharge les commandes ou mets à jour directement l'affichage :
-        this.commandes = this.commandes.map(c => 
-          c.id === commandeId ? { ...c, statut: 'Annulée' } : c
-        );
-      },
-      error: (error) => {
-        console.error('Erreur lors de l\'annulation:', error);
-      }
-    });
+    if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+      this.commandeService.annulerCommande(commandeId).subscribe({
+        next: (response) => {
+          // Mise à jour locale sans rechargement
+          const index = this.commandes.findIndex(c => c.id === commandeId);
+          if (index !== -1) {
+            this.commandes[index].statut = 'Annulée';
+          }
+        },
+        error: (error) => {
+          this.errorMessage = 'Échec de l\'annulation';
+          console.error(error);
+        }
+      });
+    }
   }
 }

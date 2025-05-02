@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Importez CommonModule
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
+
 
 @Component({
   selector: 'app-list-livreurs',
-  standalone: true, // Indique que ce composant est autonome
-  imports: [CommonModule], // Importez CommonModule ici
+  standalone: true,
+  imports: [CommonModule, RouterModule,],
   templateUrl: './list-livreurs.component.html',
-  styleUrls: ['./list-livreurs.component.css'],
+  styleUrls: ['./list-livreurs.component.css']
 })
 export class ListLivreursComponent implements OnInit {
   livreurs: any[] = [];
+  isLoading = true;
+  errorMessage: string | null = null;
 
   constructor(private adminService: AdminService) {}
 
@@ -19,13 +23,28 @@ export class ListLivreursComponent implements OnInit {
   }
 
   loadLivreurs(): void {
-    this.adminService.listLivreurs().subscribe(
-      (response) => {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.adminService.listLivreurs().subscribe({
+      next: (response) => {
         this.livreurs = response;
+        this.isLoading = false;
       },
-      (error) => {
-        console.error('Erreur lors de la récupération des livreurs', error);
+      error: (error) => {
+        console.error('Erreur:', error);
+        this.errorMessage = "Erreur lors du chargement des livreurs";
+        this.isLoading = false;
       }
-    );
+    });
+  }
+
+  editLivreur(livreur: any): void {
+    // Implémentez la logique d'édition
+    console.log('Édition du livreur:', livreur);
+  }
+
+  deleteLivreur(id: number): void {
+    
   }
 }

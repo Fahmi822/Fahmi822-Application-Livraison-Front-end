@@ -1,0 +1,76 @@
+.commandes-container {
+  padding: 20px;
+  background-color: #f4f6f8;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 20px;
+}
+
+.commandes-container h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.accordion-item {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.accordion-header {
+  background-color: #ecf0f1;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.accordion-header h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.status {
+  font-size: 14px;
+  color: #2980b9;
+}
+
+.accordion-body {
+  padding: 15px 20px;
+  background-color: #ffffff;
+}
+
+.accordion-body ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.accordion-body li {
+  margin-bottom: 8px;
+  color: #34495e;
+}
+
+.annuler-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.annuler-btn:hover {
+  background-color: #c0392b;
+}

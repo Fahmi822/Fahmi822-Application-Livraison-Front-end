@@ -1,47 +1,53 @@
-.client-dashboard-container {
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+  position: fixed;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
-.sidenav-container {
-  height: 100%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-}
-
-mat-sidenav {
-  width: 220px;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: white;
-}
-
-mat-sidenav a {
-  color: white;
-  font-weight: bold;
-}
-
-mat-sidenav a.active {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.logout-section {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
-}
-
-mat-sidenav-content {
+.main-content {
+  margin-left: 250px; /* Same as sidebar width */
+  flex: 1;
   padding: 20px;
-  background-size: cover;
-  background-position: center;
 }
 
-.content {
-  min-height: 100%;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 12px;
+.nav-link {
+  border-radius: 5px;
+  transition: all 0.3s;
+  color: #495057;
+}
+
+.nav-link:hover {
+  background-color: #e9ecef;
+}
+
+.nav-link.active {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
 }

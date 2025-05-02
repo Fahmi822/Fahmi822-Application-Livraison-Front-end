@@ -21,6 +21,8 @@ export class CommandeService {
   annulerCommande(commandeId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/annuler/${commandeId}`, {});
   }
-  
+  getAllCommandes(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
+  }
 }
 

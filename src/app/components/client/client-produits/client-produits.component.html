@@ -1,32 +1,40 @@
-<div class="produits-section">
-  <!-- Sélecteur de catégorie -->
-  <mat-form-field appearance="fill" class="categorie-select">
-    <mat-label>Catégorie</mat-label>
-    <mat-select [(ngModel)]="selectedCategorieId" (selectionChange)="loadProduits()">
-      <mat-option [value]="null">Toutes les catégories</mat-option>
-      <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+<div class="container-xxl py-4 produits-section">
+  <div class="container">
+    <!-- Titre -->
+    <div class="text-center mb-4">
+      <h2 class="section-title text-primary fw-normal">Nos Produits</h2>
+    </div>
 
-  <!-- Grille des produits -->
-  <div class="produits-grid">
-    <mat-card class="produit-card" *ngFor="let p of produits">
-      <img mat-card-image [src]="p.imageUrl" alt="{{ p.nom }}">
-      
-      <mat-card-title>{{ p.nom }}</mat-card-title>
-      
-      <mat-card-subtitle>{{ p.prix | currency:'EUR':'symbol':'1.2-2' }}</mat-card-subtitle>
-      
-      <mat-card-content>
-        <p>{{ p.description }}</p>
-      </mat-card-content>
-      
-      <mat-card-actions align="end">
-        <button mat-raised-button color="primary" (click)="addToOrder(p)">
-          Ajouter au panier
-        </button>
-      </mat-card-actions>
-    </mat-card>
+    <!-- Sélecteur de catégorie -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-4 col-sm-8">
+        <select class="form-select" [(ngModel)]="selectedCategorieId" (change)="loadProduits()">
+          <option [value]="null">Toutes les catégories</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nom }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Grille des produits -->
+    <div class="row g-3">
+      <div class="col-6 col-md-4 col-lg-3" *ngFor="let p of produits">
+        <div class="card product-card text-center border-0 shadow-sm h-100">
+          <img [src]="p.imageUrl" class="card-img-top product-image" [alt]="p.nom">
+          <div class="card-body p-3">
+            <h6 class="card-title mb-2">{{ p.nom }}</h6>
+            <div class="prix text-primary fw-bold mb-2">{{ p.prix | currency:'EUR' }}</div>
+            <p class="card-text text-muted small mb-3">{{ p.description }}</p>
+            <button class="btn btn-primary btn-sm w-100" (click)="addToOrder(p)">
+              <i class="bi bi-cart-plus me-1"></i> Ajouter
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="produits.length === 0 && !isLoading" class="text-center mt-5 py-4">
+      <i class="bi bi-box-seam display-6 text-muted mb-3"></i>
+      <p class="fs-5 text-muted">Aucun produit trouvé dans cette catégorie</p>
+    </div>
   </div>
 </div>
-

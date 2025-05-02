@@ -1,28 +1,55 @@
-<div class="admin-dashboard-container">
-    <nav class="sidebar">
-      <ul>
-        <li>
-            <a routerLink="list-clients" routerLinkActive="active">Liste des clients</a>
-        </li>
-        <li>
-            <a routerLink="list-livreurs" routerLinkActive="active">Liste des livreurs</a>
-        </li>
-        <li>
-          <a routerLink="add-livreur" routerLinkActive="active">Ajouter un livreur</a>
-        </li>
-        <li>
-          <a routerLink="categories" routerLinkActive="active">Gestion des catégories</a>
-        </li>
-        <li>
-          <a routerLink="produits" routerLinkActive="active">Gestion des produits</a>
-        </li>
-      </ul>
-      <div class="logout-section">
-        <button (click)="logout()" class="logout-button">Déconnexion</button>
-      </div>
+<div class="admin-dashboard d-flex">
+  <!-- Sidebar Navigation -->
+  <div class="sidebar bg-dark text-white">
+    <div class="sidebar-header p-4 border-bottom border-secondary">
+      <h4 class="mb-0 text-center">Tableau de Bord</h4>
+    </div>
+    
+    <nav class="nav flex-column p-3">
+      <a class="nav-link py-3 d-flex align-items-center" 
+         routerLink="list-clients" 
+         routerLinkActive="active">
+         <i class="bi bi-people-fill me-3"></i> Clients
+      </a>
+      <a class="nav-link py-3 d-flex align-items-center" 
+         routerLink="list-livreurs" 
+         routerLinkActive="active">
+         <i class="bi bi-truck me-3"></i> Livreurs
+      </a>
+      <a class="nav-link py-3 d-flex align-items-center" 
+         routerLink="add-livreur" 
+         routerLinkActive="active">
+         <i class="bi bi-person-plus me-3"></i> Ajouter Livreur
+      </a>
+      <a class="nav-link py-3 d-flex align-items-center" 
+         routerLink="categories" 
+         routerLinkActive="active">
+         <i class="bi bi-tags-fill me-3"></i> Catégories
+      </a>
+      <a class="nav-link py-3 d-flex align-items-center" 
+         routerLink="produits" 
+         routerLinkActive="active">
+         <i class="bi bi-box-seam me-3"></i> Produits
+      </a>
+      <a class="nav-link py-3 d-flex align-items-center" 
+         routerLink="commandes" 
+         routerLinkActive="active">
+         <i class="bi bi-receipt me-3"></i> Commandes
+      </a>
     </nav>
-    <div class="content">
-      <!-- Espace pour afficher les composants enfants -->
+    
+    <div class="logout-section p-3 mt-auto border-top border-secondary">
+      <button class="btn btn-outline-light w-100 d-flex align-items-center justify-content-center" 
+              (click)="logout()">
+        <i class="bi bi-box-arrow-right me-2"></i> Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content flex-grow-1">
+    <div class="content-container p-4">
       <router-outlet></router-outlet>
     </div>
   </div>
+</div>

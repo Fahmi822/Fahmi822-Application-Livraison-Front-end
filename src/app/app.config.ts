@@ -11,6 +11,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     // Configuration de Zone.js pour la détection des changements
     provideZoneChangeDetection({ eventCoalescing: true }),
+   
 
     // Configuration du routeur avec les routes définies dans `app.routes.ts`
     provideRouter(routes),

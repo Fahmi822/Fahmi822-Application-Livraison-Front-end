@@ -1,34 +1,74 @@
-<div class="container-xxl py-5">
+<div class="container-xxl py-4">
   <div class="container">
-    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-      <h1 class="section-title ff-secondary text-center text-primary fw-normal">Gestion des Livreurs</h1>
-      <h2 class="mb-5">Ajouter un Livreur</h2>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Gestion des Livreurs</h1>
+      <button class="btn btn-primary" routerLink="/livreurs/list">
+        <i class="bi bi-list-ul"></i> Voir la liste
+      </button>
     </div>
 
-    <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.3s">
-      <div class="col-lg-6">
-        <form (ngSubmit)="onSubmit()" class="p-4 border rounded bg-light shadow">
-          <div class="mb-3">
-            <label for="nom" class="form-label">Nom :</label>
-            <input type="text" id="nom" [(ngModel)]="livreurData.nom" name="nom" class="form-control" required />
-          </div>
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
 
-          <div class="mb-3">
-            <label for="email" class="form-label">Email :</label>
-            <input type="email" id="email" [(ngModel)]="livreurData.email" name="email" class="form-control" required />
-          </div>
+    <!-- Add Livreur Card -->
+    <div class="card shadow wow fadeInUp" data-wow-delay="0.2s">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-person-plus"></i> Ajouter un Livreur</h5>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="onSubmit()" [formGroup]="livreurForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nom complet</label>
+              <input formControlName="nom" type="text" class="form-control" [class.is-invalid]="showError('nom')">
+              <div *ngIf="showError('nom')" class="invalid-feedback">
+                {{ getErrorMessage('nom') }}
+              </div>
+            </div>
 
-          <div class="mb-3">
-            <label for="tel" class="form-label">Téléphone :</label>
-            <input type="text" id="tel" [(ngModel)]="livreurData.tel" name="tel" class="form-control" required />
-          </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input formControlName="email" type="email" class="form-control" [class.is-invalid]="showError('email')">
+              <div *ngIf="showError('email')" class="invalid-feedback">
+                {{ getErrorMessage('email') }}
+              </div>
+            </div>
 
-          <div class="mb-3">
-            <label for="mdp" class="form-label">Mot de passe :</label>
-            <input type="password" id="mdp" [(ngModel)]="livreurData.mdp" name="mdp" class="form-control" required />
-          </div>
+            <div class="col-md-6">
+              <label class="form-label">Téléphone</label>
+              <input formControlName="tel" type="tel" class="form-control" [class.is-invalid]="showError('tel')">
+              <div *ngIf="showError('tel')" class="invalid-feedback">
+                {{ getErrorMessage('tel') }}
+              </div>
+            </div>
 
-          <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+            <div class="col-md-6">
+              <label class="form-label">Mot de passe</label>
+              <input formControlName="mdp" type="password" class="form-control" [class.is-invalid]="showError('mdp')">
+              <div *ngIf="showError('mdp')" class="invalid-feedback">
+                {{ getErrorMessage('mdp') }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-secondary" (click)="resetForm()">
+                  <i class="bi bi-x-circle"></i> Annuler
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="livreurForm.invalid || isLoading">
+                  <span *ngIf="!isLoading">
+                    <i class="bi bi-check-circle"></i> Ajouter
+                  </span>
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
         </form>
       </div>
     </div>

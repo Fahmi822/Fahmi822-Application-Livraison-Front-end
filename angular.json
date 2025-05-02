@@ -36,6 +36,8 @@
               "src/assets/css/bootstrap.min.css",
               "src/assets/lib/animate/animate.min.css",
               "src/assets/lib/animate/animate.css"
+              
+              
             ],
             "scripts": [
                "/src/assets/js/main.js",

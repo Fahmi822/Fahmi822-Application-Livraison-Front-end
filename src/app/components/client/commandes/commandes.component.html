@@ -1,25 +1,52 @@
-<div class="commandes-container" *ngIf="commandes.length > 0">
-  <h3>Mes Commandes</h3>
-  <mat-accordion>
-    <mat-expansion-panel *ngFor="let commande of commandes">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Commande du {{ commande.dateCommande | date:'shortDate' }} - {{ commande.montant | currency:'EUR' }}
-        </mat-panel-title>
-        <mat-panel-description>
-          Statut : {{ commande.statut }}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+<div class="container-xxl py-5">
+  <div class="container">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+      <h1 class="section-title ff-secondary text-center text-primary fw-normal">Mes Commandes</h1>
+    </div>
 
-      <ul>
-        <li *ngFor="let produit of commande.produits">
-          {{ produit.nom }} - {{ produit.prix | currency:'EUR' }}
-        </li>
-      </ul>
-      <button *ngIf="commande.statut !== 'Annulée'" 
-        mat-button 
-        color="warn" 
-        (click)="annulerCommande(commande.id)">Annuler cette commande </button>
-    </mat-expansion-panel>
-  </mat-accordion>
+    <div *ngIf="isLoading" class="text-center text-secondary">Chargement...</div>
+    <div *ngIf="errorMessage" class="alert alert-danger text-center">{{ errorMessage }}</div>
+
+    <div *ngIf="!isLoading && commandes.length > 0" class="accordion wow fadeInUp" data-wow-delay="0.3s" id="commandesAccordion">
+      <div *ngFor="let commande of commandes; let i = index" class="accordion-item mb-3 border-primary">
+        <h2 class="accordion-header" id="heading{{i}}">
+          <button class="accordion-button collapsed bg-light text-primary" type="button" data-bs-toggle="collapse" 
+                  [attr.data-bs-target]="'#collapse'+i" aria-expanded="false" [attr.aria-controls]="'collapse'+i">
+            <div class="d-flex justify-content-between w-100 pe-3">
+              <span>Commande du {{ commande.dateCommande | date:'shortDate' }}</span>
+              <span class="fw-bold">{{ commande.montant | currency:'EUR' }}</span>
+              <span [ngClass]="{
+                'badge bg-warning text-dark': commande.statut === 'En attente',
+                'badge bg-success': commande.statut === 'Validée',
+                'badge bg-danger': commande.statut === 'Annulée'
+              }">
+                {{ commande.statut }}
+              </span>
+            </div>
+          </button>
+        </h2>
+        <div [id]="'collapse'+i" class="accordion-collapse collapse" [attr.aria-labelledby]="'heading'+i" data-bs-parent="#commandesAccordion">
+          <div class="accordion-body">
+            <ul class="list-group mb-3">
+              <li *ngFor="let produit of commande.produits" class="list-group-item d-flex justify-content-between">
+                <span>{{ produit.nom }}</span>
+                <span class="text-muted">{{ produit.prix | currency:'EUR' }}</span>
+              </li>
+            </ul>
+            <div class="d-flex justify-content-end">
+              <button *ngIf="commande.statut !== 'Annulée'" 
+                      class="btn btn-outline-danger btn-sm" 
+                      (click)="annulerCommande(commande.id)">
+                <i class="fas fa-times-circle me-1"></i> Annuler cette commande
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="!isLoading && commandes.length === 0" class="text-center text-muted">
+      Aucune commande trouvée.
+    </p>
+  </div>
 </div>

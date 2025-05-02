@@ -1,78 +1,123 @@
-<div class="container-xxl py-5">
-    <div class="container">
-      <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-        <h1 class="section-title ff-secondary text-primary fw-normal">Gestion des Catégories</h1>
-        <h2 class="mb-5">Ajouter ou Modifier une Catégorie</h2>
+<div class="container-xxl py-4">
+  <div class="container">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Gestion des Catégories</h1>
+      <button class="btn btn-primary" (click)="openAddModal()">
+        <i class="bi bi-plus-circle"></i> Ajouter une Catégorie
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
       </div>
-  
-      <!-- Formulaire d'ajout -->
-      <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.2s">
-        <div class="col-lg-6 mb-4">
-          <div class="p-4 border rounded bg-light shadow">
-            <h4 class="mb-4 text-center text-primary">Ajouter une Catégorie</h4>
-            <form (ngSubmit)="addCategorie()">
-              <div class="mb-3">
-                <label for="nom" class="form-label">Nom:</label>
-                <input type="text" class="form-control" [(ngModel)]="newCategorie.nom" name="nom" required />
-              </div>
-              <div class="mb-3">
-                <label for="description" class="form-label">Description:</label>
-                <textarea class="form-control" [(ngModel)]="newCategorie.description" name="description" rows="3"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary w-100">Ajouter</button>
-            </form>
-          </div>
+    </div>
+
+    <!-- Categories Table -->
+    <div *ngIf="!isLoading" class="card shadow">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let categorie of categories">
+                <td>{{ categorie.id }}</td>
+                <td>{{ categorie.nom }}</td>
+                <td>{{ categorie.description }}</td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-warning" (click)="openEditModal(categorie)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCategorie(categorie.id)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-  
-      <!-- Formulaire de modification -->
-      <div class="row justify-content-center wow fadeInUp" data-wow-delay="0.3s" *ngIf="selectedCategorie">
-        <div class="col-lg-6 mb-4">
-          <div class="p-4 border rounded bg-warning-subtle shadow">
-            <h4 class="mb-4 text-center text-warning">Modifier une Catégorie</h4>
-            <form (ngSubmit)="updateCategorie()">
-              <div class="mb-3">
-                <label class="form-label">Nom:</label>
-                <input type="text" class="form-control" [(ngModel)]="selectedCategorie.nom" name="editNom" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Description:</label>
-                <textarea class="form-control" [(ngModel)]="selectedCategorie.description" name="editDescription" rows="3"></textarea>
-              </div>
-              <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-warning">Mettre à jour</button>
-                <button type="button" class="btn btn-secondary" (click)="selectedCategorie = null">Annuler</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Liste des catégories -->
-      <div class="table-responsive wow fadeInUp" data-wow-delay="0.4s">
-        <h3 class="mb-4 text-center">Liste des Catégories</h3>
-        <table class="table table-bordered table-hover text-center align-middle">
-          <thead class="bg-primary text-white">
-            <tr>
-              <th>ID</th>
-              <th>Nom</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let cat of categories">
-              <td>{{ cat.id }}</td>
-              <td>{{ cat.nom }}</td>
-              <td>{{ cat.description }}</td>
-              <td>
-                <button class="btn btn-sm btn-warning me-2" (click)="editCategorie(cat)">Modifier</button>
-                <button class="btn btn-sm btn-danger" (click)="deleteCategorie(cat.id)">Supprimer</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
-  
+</div>
+
+<!-- Add Category Modal -->
+<div #addModal class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Ajouter une Catégorie</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="categorieForm" (ngSubmit)="submitCategorie()">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input formControlName="nom" type="text" class="form-control" required>
+            <div *ngIf="categorieForm.get('nom')?.invalid && categorieForm.get('nom')?.touched" class="invalid-feedback d-block">
+              Le nom est requis (min 3 caractères).
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary" [disabled]="categorieForm.invalid">
+              <i class="bi bi-check-circle"></i> Ajouter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div #editModal class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-white">
+        <h5 class="modal-title">Modifier la Catégorie</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="categorieForm" (ngSubmit)="submitCategorie()">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input formControlName="nom" type="text" class="form-control" required>
+            <div *ngIf="categorieForm.get('nom')?.invalid && categorieForm.get('nom')?.touched" class="invalid-feedback d-block">
+              Le nom est requis (min 3 caractères).
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea formControlName="description" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-warning" [disabled]="categorieForm.invalid">
+              <i class="bi bi-check-circle"></i> Mettre à jour
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
