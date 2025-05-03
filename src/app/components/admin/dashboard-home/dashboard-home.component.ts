@@ -1,6 +1,18 @@
-import { Component, AfterViewInit } from '@angular/core';
-import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { StatistiquesService } from '../../../services/statistiques.service';
+import * as Highcharts from 'highcharts';
+import { finalize } from 'rxjs/operators';
+
+interface ChartData {
+  date: string;
+  nombreCommandes: number;
+}
+
+interface CategorieData {
+  categorieNom: string;
+  nombreProduits: number;
+}
 
 @Component({
   selector: 'app-dashboard-home',
@@ -9,102 +21,170 @@ import { CommonModule } from '@angular/common';
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.scss']
 })
-export class DashboardHomeComponent implements AfterViewInit {
-  // Statistiques pour les cards
+export class DashboardHomeComponent implements OnInit, AfterViewInit {
   stats = [
-    { title: 'Clients', value: 1245, icon: 'bi-people-fill', color: 'bg-primary' },
-    { title: 'Livreurs', value: 42, icon: 'bi-truck', color: 'bg-success' },
-    { title: 'Commandes', value: 367, icon: 'bi-receipt', color: 'bg-info' },
-    { title: 'Revenus', value: '15,240', icon: 'bi-currency-euro', color: 'bg-warning' }
+    { title: 'Clients', value: 0, icon: 'bi-people-fill', color: 'primary' },
+    { title: 'Livreurs', value: 0, icon: 'bi-truck', color: 'success' },
+    { title: 'Commandes', value: 0, icon: 'bi-receipt', color: 'info' },
+    { title: 'Revenus', value: '0 €', icon: 'bi-currency-euro', color: 'warning' }
   ];
 
-  ngAfterViewInit(): void {
-    this.initMainChart();
-    this.initPieChart();
+  isLoading = true;
+  chartInitialized = false;
+
+  constructor(private statsService: StatistiquesService) {}
+
+  ngOnInit(): void {
+    this.loadStats();
   }
 
-  private initMainChart(): void {
-    Highcharts.chart('main-chart', {
-      chart: {
-        type: 'column'
-      },
-      title: {
-        text: 'Commandes par mois'
-      },
-      xAxis: {
-        categories: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Dec']
-      },
-      yAxis: {
-        title: {
-          text: 'Nombre de commandes'
-        }
-      },
-      series: [{
-        name: '2024',
-        type: 'column',
-        data: [107, 131, 165, 143, 156, 187, 199, 203, 189, 151, 126, 98],
-        color: '#4e73df'
-      }],
-      credits: {
-        enabled: false
-      },
-      plotOptions: {
-        column: {
-          borderRadius: 5,
-          pointPadding: 0.2,
-          borderWidth: 0
-        }
-      }
+  ngAfterViewInit(): void {
+    this.chartInitialized = true;
+  }
+
+  loadStats(): void {
+    this.isLoading = true;
+    
+    this.statsService.getNombreClients().pipe(
+      finalize(() => this.checkLoading())
+    ).subscribe({
+      next: count => this.stats[0].value = count,
+      error: err => console.error('Erreur clients:', err)
+    });
+
+    this.statsService.getNombreLivreurs().pipe(
+      finalize(() => this.checkLoading())
+    ).subscribe({
+      next: count => this.stats[1].value = count,
+      error: err => console.error('Erreur livreurs:', err)
+    });
+
+    this.statsService.getNombreCommandes().pipe(
+      finalize(() => this.checkLoading())
+    ).subscribe({
+      next: count => this.stats[2].value = count,
+      error: err => console.error('Erreur commandes:', err)
+    });
+
+    this.statsService.getRevenuTotal().pipe(
+      finalize(() => this.checkLoading())
+    ).subscribe({
+      next: revenu => this.stats[3].value = `${revenu} €`,
+      error: err => console.error('Erreur revenu:', err)
+    });
+
+    this.loadChartData();
+  }
+
+  private loadChartData(): void {
+    this.statsService.getRepartitionCategories().subscribe({
+      next: data => this.initPieChart(data),
+      error: err => console.error('Erreur catégories:', err)
+    });
+
+    this.statsService.getCommandesParJour().subscribe({
+      next: data => this.initMainChart(data),
+      error: err => console.error('Erreur commandes par jour:', err)
     });
   }
 
-  private initPieChart(): void {
+  private checkLoading(): void {
+    if (this.stats.every(stat => stat.value !== 0)) {
+      this.isLoading = false;
+    }
+  }
+
+  private initMainChart(data: ChartData[]): void {
+    if (!this.chartInitialized || !document.getElementById('main-chart')) return;
+
+    Highcharts.chart('main-chart', {
+      chart: { 
+        type: 'line',
+        backgroundColor: 'transparent'
+      },
+      title: { 
+        text: 'Commandes par jour',
+        style: { color: '#333' }
+      },
+      xAxis: { 
+        categories: data.map(item => item.date),
+        title: { text: 'Date' },
+        labels: { style: { color: '#666' } }
+      },
+      yAxis: { 
+        title: { 
+          text: 'Nombre de commandes',
+          style: { color: '#666' } 
+        },
+        min: 0,
+        gridLineColor: 'rgba(0,0,0,0.1)'
+      },
+      series: [{
+        type: 'line',
+        name: 'Commandes',
+        data: data.map(item => item.nombreCommandes),
+        color: '#4e73df',
+        marker: {
+          radius: 4,
+          fillColor: '#FFFFFF',
+          lineWidth: 2,
+          lineColor: '#4e73df'
+        }
+      }],
+      legend: {
+        itemStyle: { color: '#333' }
+      },
+      credits: { enabled: false }
+    });
+  }
+
+  private initPieChart(data: CategorieData[]): void {
+    if (!this.chartInitialized || !document.getElementById('pie-chart')) return;
+
     Highcharts.chart('pie-chart', {
-      chart: {
-        type: 'pie'
+      chart: { 
+        type: 'pie',
+        backgroundColor: 'transparent'
       },
-      title: {
-        text: 'Répartition des catégories'
+      title: { 
+        text: 'Répartition par catégorie',
+        style: { color: '#333' }
       },
+      series: [{
+        type: 'pie',
+        name: 'Commandes',
+        data: data.map(item => ({
+          name: item.categorieNom,
+          y: item.nombreProduits,
+          color: this.getRandomColor()
+        })),
+        size: '80%',
+        innerSize: '40%',
+        showInLegend: true,
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.y}',
+          style: {
+            textOutline: 'none',
+            color: '#333'
+          }
+        }
+      }],
       plotOptions: {
         pie: {
           allowPointSelect: true,
           cursor: 'pointer',
-          dataLabels: {
-            enabled: true,
-            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-          }
+          borderWidth: 0,
+          shadow: false,
+          center: ['50%', '50%']
         }
       },
-      series: [{
-        type: 'pie', // Ajout du type explicite
-        name: 'Commandes',
-        colorByPoint: true,
-        data: [{
-          name: 'Électronique',
-          y: 35,
-          color: '#4e73df'
-        }, {
-          name: 'Alimentation',
-          y: 25,
-          color: '#1cc88a'
-        }, {
-          name: 'Mode',
-          y: 20,
-          color: '#36b9cc'
-        }, {
-          name: 'Maison',
-          y: 15,
-          color: '#f6c23e'
-        }, {
-          name: 'Autres',
-          y: 5,
-          color: '#e74a3b'
-        }]
-      }],
-      credits: {
-        enabled: false
-      }
-    } as any); // Note: le 'as any' peut être supprimé si vous utilisez les bons types
+      credits: { enabled: false }
+    });
+  }
+
+  private getRandomColor(): string {
+    const colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'];
+    return colors[Math.floor(Math.random() * colors.length)];
   }
 }

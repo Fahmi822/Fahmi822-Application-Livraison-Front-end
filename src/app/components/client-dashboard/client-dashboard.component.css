@@ -1,45 +1,86 @@
-.dashboard-container {
-  display: flex;
+.client-dashboard {
   min-height: 100vh;
 }
 
+.sidebar-header h4 {
+  color: white !important;
+}
+
 .sidebar {
-  width: 250px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   height: 100vh;
   position: fixed;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  background-color: #212529; /* Couleur de fond sombre */
 }
 
 .main-content {
-  margin-left: 250px; /* Same as sidebar width */
-  flex: 1;
+  margin-left: 280px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.content-container {
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 20px;
 }
 
 .nav-link {
+  color: #adb5bd;
   border-radius: 5px;
   transition: all 0.3s;
-  color: #495057;
+  margin-bottom: 5px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-link:hover {
-  background-color: #e9ecef;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-link.active {
-  background-color: #e7f1ff;
-  color: #0d6efd;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
   font-weight: 500;
 }
 
-.content-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.nav-link i {
+  width: 24px;
+  text-align: center;
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.logout-section {
+  margin-top: auto;
+  padding: 15px;
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 /* Responsive adjustments */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 220px;
+  }
+  
+  .main-content {
+    margin-left: 220px;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -49,5 +90,25 @@
   
   .main-content {
     margin-left: 0;
+  }
+  
+  .nav-link {
+    padding: 10px 15px;
+  }
+  
+  .logout-section {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+  
+  .nav-link i {
+    margin-right: 8px;
+  font-size: 1rem;
   }
 }

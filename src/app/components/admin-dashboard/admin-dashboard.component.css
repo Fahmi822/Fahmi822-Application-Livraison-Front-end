@@ -1,7 +1,9 @@
 .admin-dashboard {
   min-height: 100vh;
 }
-
+.sidebar-header h4 {
+  color: white !important;
+}
 .sidebar {
   width: 280px;
   display: flex;

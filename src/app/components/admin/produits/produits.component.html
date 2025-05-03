@@ -16,11 +16,11 @@
     </div>
 
     <!-- Products Table -->
-    <div *ngIf="!isLoading" class="card shadow">
+    <div *ngIf="!isLoading" class="table-responsive wow fadeInUp" data-wow-delay="0.3s">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead class="table-light">
+          <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="bg-primary text-white">
               <tr>
                 <th>ID</th>
                 <th>Nom</th>
@@ -35,7 +35,7 @@
               <tr *ngFor="let produit of produits">
                 <td>{{ produit.id }}</td>
                 <td>{{ produit.nom }}</td>
-                <td>{{ produit.prix | currency:'EUR' }}</td>
+                <td>{{ produit.prix | currency:'TND':'symbol':'1.3-3' }}</td>
                 <td>
                   <span class="badge bg-success">{{ produit.quantite }}</span>
                 </td>
