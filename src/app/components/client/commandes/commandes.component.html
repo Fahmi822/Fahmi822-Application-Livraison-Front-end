@@ -2,42 +2,83 @@
   <div class="container">
     <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
       <h1 class="section-title ff-secondary text-center text-primary fw-normal">Mes Commandes</h1>
+      <p class="text-muted">Retrouvez l'historique de toutes vos commandes</p>
     </div>
 
-    <div *ngIf="isLoading" class="text-center text-secondary">Chargement...</div>
-    <div *ngIf="errorMessage" class="alert alert-danger text-center">{{ errorMessage }}</div>
+    <!-- États de chargement -->
+    <div *ngIf="isLoading" class="text-center py-5 wow fadeInUp" data-wow-delay="0.2s">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+      <p class="text-muted mt-2">Chargement de vos commandes...</p>
+    </div>
 
-    <div *ngIf="!isLoading && commandes.length > 0" class="accordion wow fadeInUp" data-wow-delay="0.3s" id="commandesAccordion">
-      <div *ngFor="let commande of commandes; let i = index" class="accordion-item mb-3 border-primary">
-        <h2 class="accordion-header" id="heading{{i}}">
-          <button class="accordion-button collapsed bg-light text-primary" type="button" data-bs-toggle="collapse" 
-                  [attr.data-bs-target]="'#collapse'+i" aria-expanded="false" [attr.aria-controls]="'collapse'+i">
-            <div class="d-flex justify-content-between w-100 pe-3">
-              <span>Commande du {{ commande.dateCommande | date:'shortDate' }}</span>
-              <span class="fw-bold">{{ commande.montant | currency:'EUR' }}</span>
-              <span [ngClass]="{
-                'badge bg-warning text-dark': commande.statut === 'En attente',
-                'badge bg-success': commande.statut === 'Validée',
-                'badge bg-danger': commande.statut === 'Annulée'
+    <div *ngIf="errorMessage" class="alert alert-danger text-center wow fadeInUp" data-wow-delay="0.2s">
+      <i class="bi bi-exclamation-circle-fill me-2"></i>{{ errorMessage }}
+    </div>
+
+    <!-- Liste des commandes en cartes -->
+    <div *ngIf="!isLoading && commandes.length > 0" class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
+      <div *ngFor="let commande of commandes; let i = index" class="col-12">
+        <div class="card border-primary mb-3">
+          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-calendar-date me-2"></i>
+              <strong>{{ commande.dateCommande | date:'dd/MM/yyyy' }}</strong>
+              <span class="ms-3">#{{ commande.id }}</span>
+            </div>
+            <div>
+              <span class="badge bg-white text-primary me-2">
+                {{ commande.montant | currency:'EUR' }}
+              </span>
+              <span class="badge" [ngClass]="{
+                'bg-warning': commande.statut === 'En attente',
+                'bg-success': commande.statut === 'Validée',
+                'bg-danger': commande.statut === 'Annulée',
+                'bg-info': commande.statut === 'Livrée'
               }">
                 {{ commande.statut }}
               </span>
+              <button class="btn btn-sm btn-light ms-2" (click)="toggleCommande(i)">
+                <i class="bi" [class.bi-chevron-down]="!commande.isOpen" [class.bi-chevron-up]="commande.isOpen"></i>
+              </button>
             </div>
-          </button>
-        </h2>
-        <div [id]="'collapse'+i" class="accordion-collapse collapse" [attr.aria-labelledby]="'heading'+i" data-bs-parent="#commandesAccordion">
-          <div class="accordion-body">
-            <ul class="list-group mb-3">
-              <li *ngFor="let produit of commande.produits" class="list-group-item d-flex justify-content-between">
-                <span>{{ produit.nom }}</span>
-                <span class="text-muted">{{ produit.prix | currency:'EUR' }}</span>
-              </li>
-            </ul>
+          </div>
+
+          <div class="card-body" *ngIf="commande.isOpen">
+            <h5 class="card-title">Détails de la commande</h5>
+            
+            <div class="mb-3">
+              <h6>Produits :</h6>
+              <ul class="list-group">
+                <li *ngFor="let produit of commande.produits" 
+                    class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>
+                    {{ produit.nom }}
+                    <span class="text-muted ms-2">x{{ produit.quantite || 1 }}</span>
+                  </span>
+                  <span class="badge bg-primary rounded-pill">
+                    {{ produit.prix | currency:'EUR' }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
             <div class="d-flex justify-content-end">
               <button *ngIf="commande.statut !== 'Annulée'" 
-                      class="btn btn-outline-danger btn-sm" 
+                      class="btn btn-outline-danger me-2"
                       (click)="annulerCommande(commande.id)">
-                <i class="fas fa-times-circle me-1"></i> Annuler cette commande
+                <i class="bi bi-x-circle-fill me-2"></i>Annuler
+              </button>
+
+              <button *ngIf="commande.statut === 'Livrée'"
+                      class="btn btn-outline-warning me-2"
+                      (click)="openReclamationModal(commande)">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>Signaler
+              </button>
+
+              <button class="btn btn-outline-primary">
+                <i class="bi bi-receipt me-2"></i>Facture
               </button>
             </div>
           </div>
@@ -45,8 +86,34 @@
       </div>
     </div>
 
-    <p *ngIf="!isLoading && commandes.length === 0" class="text-center text-muted">
-      Aucune commande trouvée.
-    </p>
+    <!-- Aucune commande -->
+    <div *ngIf="!isLoading && commandes.length === 0" class="text-center py-5 wow fadeInUp" data-wow-delay="0.3s">
+      <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+      <h4 class="mt-3 text-muted">Vous n'avez pas encore passé de commande</h4>
+      <button class="btn btn-primary mt-3" routerLink="/produits">
+        <i class="bi bi-basket me-2"></i>Découvrir nos produits
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de réclamation -->
+<div class="modal fade" id="reclamationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Signaler un problème</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="reclamationForm">
+          <!-- ... (contenu identique) ... -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="submitReclamation()">Envoyer</button>
+      </div>
+    </div>
   </div>
 </div>

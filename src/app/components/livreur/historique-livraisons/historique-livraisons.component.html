@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Historique des livraisons</h3>
+    </div>
+    
+    <div class="card-body">
+      <!-- Loading state -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2">Chargement de l'historique...</p>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!isLoading && !error && livraisons.length === 0" class="alert alert-info">
+        Aucune livraison effectuée pour le moment
+      </div>
+
+      <!-- Livraisons list -->
+      <div *ngFor="let livraison of livraisons" class="mb-4 p-3 border rounded">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">Livraison #{{ livraison.Id }}</h4>
+          <span class="badge" [ngClass]="{
+            'bg-success': livraison.Statut === 'Livrée',
+            'bg-warning': livraison.Statut === 'En cours'
+          }">
+            {{ livraison.Statut }}
+          </span>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Date livraison:</strong> {{ livraison.DateLivraison | date:'medium' }}</p>
+            <p><strong>Commande:</strong> #{{ livraison.Commande?.Id }}</p>
+            <p><strong>Client:</strong> {{ livraison.Commande?.Client?.Nom }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Montant:</strong> {{ livraison.Commande?.Montant | currency:'EUR' }}</p>
+            <p><strong>Statut commande:</strong> {{ livraison.Commande?.Statut }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

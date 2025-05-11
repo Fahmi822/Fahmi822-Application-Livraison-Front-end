@@ -4,6 +4,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommandeService } from '../../../services/commande.service';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../services/auth.service';
+import { NotificationService } from '../../../services/notification.service';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-admin-commandes',
   standalone: true,
@@ -12,17 +15,18 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./admin-commandes.component.scss']
 })
 export class AdminCommandesComponent implements OnInit {
-
   commandes: any[] = [];
   isLoading = false;
   errorMessage = '';
   livreurs: any[] = [];
- 
 
-    
-
-
-  constructor(private commandeService: CommandeService, private http: HttpClient,private authService: AuthService) {}
+  constructor(
+    private commandeService: CommandeService,
+    private notificationService: NotificationService,
+    private http: HttpClient,
+    private authService: AuthService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.fetchCommandes();
@@ -39,53 +43,75 @@ export class AdminCommandesComponent implements OnInit {
       error: () => {
         this.errorMessage = "Erreur lors du chargement des commandes.";
         this.isLoading = false;
+        this.toastr.error(this.errorMessage);
       }
     });
   }
 
-  annulerCommande(id: number): void {
-    if (confirm('Voulez-vous vraiment annuler cette commande ?')) {
-      this.commandeService.annulerCommande(id).subscribe({
-        next: () => this.fetchCommandes(),
-        error: () => alert("Erreur lors de l'annulation de la commande.")
+  annulerCommande(commandeId: number): void {
+    if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+      this.commandeService.annulerCommande(commandeId).subscribe({
+        next: (response) => {
+          // Mettre à jour localement
+          const index = this.commandes.findIndex(c => c.id === commandeId);
+          if (index !== -1) {
+            this.commandes[index].statut = 'Annulée';
+          }
+          
+          // Afficher notification
+          this.toastr.success('Commande annulée avec succès', 'Succès');
+          
+          // Rafraîchir les notifications
+          this.notificationService.getMesNotifications().subscribe();
+        },
+        error: (error) => {
+          console.error(error);
+          this.toastr.error('Échec de l\'annulation de la commande', 'Erreur');
+        }
       });
     }
   }
 
   fetchLivreurs(): void {
-    const token = localStorage.getItem('token'); // Récupère le token du localStorage
-  
+    const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
+
     this.http.get<any[]>('http://localhost:5287/api/admin/list-livreurs', { headers })
       .subscribe({
         next: (data) => this.livreurs = data,
         error: (err) => {
           console.error(err);
           this.errorMessage = "Erreur d'autorisation. Veuillez vous reconnecter.";
+          this.toastr.error(this.errorMessage);
         }
       });
   }
   
   assignerLivreur(commandeId: number, livreurId: number): void {
-    if (!livreurId) return;
-  
-    const headers = this.authService.getHeaders(); // Si tu utilises un token JWT
-  
+    if (!livreurId) {
+      this.toastr.warning('Veuillez sélectionner un livreur', 'Attention');
+      return;
+    }
+
+    const headers = this.authService.getHeaders();
+
     this.http.put(
       `http://localhost:5287/api/commande/admin/assigner-livreur/${commandeId}?livreurId=${livreurId}`,
       {},
-      { headers } // Inclure les headers ici si nécessaire
+      { headers }
     ).subscribe({
-      next: () => {
-        alert('Commande assignée avec succès');
+      next: (response: any) => {
+        this.toastr.success('Livreur assigné avec succès', 'Succès');
         this.fetchCommandes();
+        this.notificationService.getMesNotifications().subscribe();
       },
-      error: () => alert('Erreur lors de l\'assignation')
+      error: (err) => {
+        console.error('Erreur assignation:', err);
+        this.toastr.error('Erreur lors de l\'assignation du livreur', 'Erreur');
+      }
     });
   }
-  
-  
+
   onLivreurChange(event: Event, commandeId: number): void {
     const selectElement = event.target as HTMLSelectElement;
     const livreurId = Number(selectElement.value);

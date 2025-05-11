@@ -13,27 +13,29 @@ export class AuthService {
   private jwtHelper = new JwtHelperService();
 
   constructor(private http: HttpClient, private router: Router) {}
-
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    return !token || this.jwtHelper.isTokenExpired(token);
+  }
   // Connexion
   login(email: string, password: string): Observable<any> {
-    return this.http
-      .post<any>(`${this.apiUrl}/login`, { email, mdp: password })
-      .pipe(
-        tap((response) => {
-          localStorage.setItem('token', response.token); // Stocker le token
-          localStorage.setItem('user', JSON.stringify(response)); // Stocker les infos utilisateur
-
-          // Rediriger en fonction du rôle
-          this.redirectBasedOnRole(response.role);
-        })
+    return this.http.post<any>(`${this.apiUrl}/login`, { 
+      email, 
+      mdp: password // Corrigé pour correspondre au backend
+    }).pipe(
+      tap((response) => {
+        localStorage.setItem('token', response.token);
+        // Stockez les informations utilisateur de manière structurée
+        localStorage.setItem('user', JSON.stringify({
+          nom: response.nom,
+          role: response.role,
+          clientId: response.clientId // Utilisez le même nom que le backend
+        }));
+        this.redirectBasedOnRole(response.role);
+      })
       );
   }
-  getHeaders() {
-    const token = this.getToken();
-    return new HttpHeaders({
-      Authorization: token ? `Bearer ${token}` : '',
-    });
-  }
+  
   
   registerLivreur(livreurData: any): Observable<any> {
     // Récupérer le token JWT depuis le localStorage
@@ -111,20 +113,30 @@ export class AuthService {
     return localStorage.getItem('token');
   }
   
+  getHeaders() {
+    const token = this.getToken();
+    return new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+      'Content-Type': 'application/json'
+    });
+  }
 
-
-getClientId(): number | null {
-  const token = this.getToken();
-  if (token) {
+  getClientId(): number | null {
+    const token = this.getToken();
+    if (!token) return null;
+    
     try {
       const decodedToken = this.jwtHelper.decodeToken(token);
-      return decodedToken.ClientId || decodedToken.clientId || null;
+      // Vérification plus stricte du claim
+      return decodedToken['ClientId'] || null;
     } catch (error) {
-      console.error('Erreur lors du décodage du token', error);
+      console.error('Erreur de décodage du token', error);
       return null;
     }
   }
-  return null;
+getCurrentUser(): any {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
 }
 
 

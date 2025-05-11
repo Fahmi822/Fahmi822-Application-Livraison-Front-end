@@ -14,7 +14,10 @@ export class CommandeService {
   passerCommande(commandeDto: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/passer`, commandeDto);
   }
-
+  // In your commande.service.ts
+  createReclamation(reclamationData: any): Observable<any> {
+  return this.http.post<any>('your-api-endpoint', reclamationData);
+  }
   getCommandesByClient(clientId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/client/${clientId}`);
   }

@@ -1,0 +1,108 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">
+        <i class="bi bi-truck me-2"></i>Commandes à livrer
+      </h3>
+      <button (click)="refresh()" class="btn btn-sm btn-light" [disabled]="isLoading">
+        <i class="bi" [ngClass]="{'bi-arrow-clockwise': !isLoading, 'bi-arrow-clockwise animate-spin': isLoading}"></i>
+        {{ isLoading ? 'Chargement...' : 'Rafraîchir' }}
+      </button>
+    </div>
+
+    <div class="card-body">
+      <!-- État de chargement -->
+      <div *ngIf="isLoading && commandes.length === 0" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-3">Chargement des commandes...</p>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div *ngIf="error" class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error = null"></button>
+      </div>
+
+      <!-- Liste vide -->
+      <div *ngIf="!isLoading && !error && commandes.length === 0" class="alert alert-info">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        Aucune commande à livrer pour le moment
+      </div>
+
+      <!-- Liste des commandes -->
+      <div class="row g-4">
+        <div *ngFor="let commande of commandes" class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <h5 class="mb-0 text-primary">Commande #{{ commande.id }}</h5>
+              <span class="badge rounded-pill" [ngClass]="{
+                'bg-warning': commande.statut === 'En attente',
+                'bg-info': commande.statut === 'En cours de livraison',
+                'bg-success': commande.statut === 'Livrée',
+                'bg-danger': commande.statut === 'Annulée'
+              }">
+                {{ commande.statut }}
+              </span>
+            </div>
+
+            <div class="card-body">
+              <div class="mb-3">
+                <h6 class="d-flex align-items-center text-secondary">
+                  <i class="bi bi-person me-2"></i>Client
+                </h6>
+                <p class="ms-4">{{ commande.clientNomComplet }}</p>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-6">
+                  <h6 class="d-flex align-items-center text-secondary">
+                    <i class="bi bi-calendar me-2"></i>Date
+                  </h6>
+                  <p class="ms-4">{{ formatDate(commande.dateCommande) }}</p>
+                </div>
+                <div class="col-6">
+                  <h6 class="d-flex align-items-center text-secondary">
+                    <i class="bi bi-currency-euro me-2"></i>Montant
+                  </h6>
+                  <p class="ms-4">{{ commande.montant | currency:'EUR' }}</p>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <h6 class="d-flex align-items-center text-secondary">
+                  <i class="bi bi-box-seam me-2"></i>Produits ({{ commande.produits.length }})
+                </h6>
+                <ul class="list-group list-group-flush">
+                  <li *ngFor="let produit of commande.produits" 
+                      class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ produit.nom }}</span>
+                    <span class="badge bg-light text-dark">{{ produit.prix | currency:'EUR' }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card-footer bg-transparent border-top-0 text-end">
+              <button 
+                (click)="confirmerPriseEnCharge(commande.id)"
+                class="btn btn-primary"
+                [disabled]="loadingCommandeIds.has(commande.id)">
+                
+                <span *ngIf="!loadingCommandeIds.has(commande.id)">
+                  <i class="bi bi-check-circle me-2"></i>Prendre en charge
+                </span>
+                <span *ngIf="loadingCommandeIds.has(commande.id)">
+                  <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                  En cours...
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

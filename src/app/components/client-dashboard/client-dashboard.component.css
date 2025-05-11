@@ -112,3 +112,157 @@
   font-size: 1rem;
   }
 }
+/* Style minimaliste */
+.chat-assistant-container {
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
+}
+
+/* Icône seule */
+.chat-icon {
+  width: 50px;
+  height: 50px;
+  background: #3f51b5;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.chat-icon:hover {
+  transform: scale(1.1);
+  background: #303f9f;
+}
+
+/* Fenêtre de chat */
+.chat-window {
+  width: 350px;
+  border-radius: 10px;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chat-window {
+    width: 300px;
+  }
+  
+  .chat-icon {
+    width: 45px;
+    height: 45px;
+  }
+}
+/* Correction de la position du panneau de notification */
+.notification-panel {
+  top: 60px; /* Position sous la barre de notification */
+  right: 20px;
+  animation: slideDown 0.3s ease-out;
+  width: 350px !important; /* Force la largeur */
+}
+
+/* Styles pour la barre de notification */
+.notification-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Icône de notification */
+.notification-icon {
+  position: relative;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.notification-icon:hover {
+  background-color: #f0f0f0;
+}
+
+/* Badge de compteur */
+.notification-icon .badge {
+  font-size: 0.65rem;
+  padding: 3px 5px;
+  min-width: 18px;
+}
+
+/* Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles du panneau */
+.notification-panel .card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.notification-panel .card-header {
+  padding: 12px 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.notification-panel .list-group-item {
+  padding: 12px 15px;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.notification-panel .list-group-item:not(.bg-light):hover {
+  background-color: #f8f9fa;
+}
+
+.notification-panel .list-group-item.bg-light {
+  background-color: #f0f7ff !important;
+  border-left: 3px solid #0d6efd;
+}
+
+/* Icônes de type */
+.notification-panel .bi-exclamation-triangle-fill { color: #dc3545; }
+.notification-panel .bi-check-circle-fill { color: #198754; }
+.notification-panel .bi-truck { color: #fd7e14; }
+.notification-panel .bi-info-circle-fill { color: #0dcaf0; }
+
+/* Bouton de commande */
+.notification-panel .btn-outline-primary {
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
+/* Message vide */
+.notification-panel .text-muted {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d !important;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .notification-panel {
+    width: 300px !important;
+    right: 10px;
+  }
+}

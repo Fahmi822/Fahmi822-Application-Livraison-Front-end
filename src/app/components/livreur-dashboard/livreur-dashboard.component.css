@@ -1,0 +1,90 @@
+/* Main Structure */
+.livreur-dashboard {
+    min-height: 100vh;
+    display: flex;
+    background-color: #f8f9fa;
+  }
+  
+  .sidebar {
+    width: 280px;
+    min-height: 100vh;
+    background: #2c3e50;
+    color: white;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  
+  /* Sidebar Styles */
+  .sidebar-header {
+    cursor: pointer;
+    background-color: #1a252f;
+  }
+  
+  .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    margin-bottom: 5px;
+    transition: all 0.3s;
+  }
+  
+  .nav-link:hover, .nav-link.active {
+    background-color: #34495e;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .logout-section {
+    background-color: #1a252f;
+  }
+  
+  /* Content Styles */
+  .status-bar {
+    border-bottom: 1px solid #dee2e6;
+    background-color: white;
+  }
+  
+  .content-container {
+    flex: 1;
+    background-color: #f8f9fa;
+  }
+  
+  .delivery-item {
+    background-color: white;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .delivery-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .products-section {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .livreur-dashboard {
+      flex-direction: column;
+    }
+    
+    .sidebar {
+      width: 100%;
+      min-height: auto;
+    }
+  }
+  
+  /* Bootstrap overrides */
+  .list-group-item {
+    border-left: none;
+    border-right: none;
+  }

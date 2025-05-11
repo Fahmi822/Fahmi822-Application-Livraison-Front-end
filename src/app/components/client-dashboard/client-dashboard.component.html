@@ -37,9 +37,155 @@
   </div>
   
   <!-- Main Content Area -->
-  <div class="main-content flex-grow-1">
+  <div class="main-content flex-grow-1 position-relative">
+    <!-- Notification Bar -->
+    <div class="notification-bar d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+      <div class="d-flex align-items-center">
+        <!-- Notification Icon with Badge -->
+        <div class="notification-icon position-relative me-3" 
+             (click)="toggleNotificationsPanel()"
+             style="cursor: pointer;">
+          <i class="bi bi-bell fs-4"></i>
+          <span *ngIf="unreadNotificationsCount > 0" 
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ unreadNotificationsCount }}
+          </span>
+        </div>
+        
+        <!-- User Profile Shortcut -->
+        <div class="user-profile d-flex align-items-center">
+          <img src="assets/images/user-avatar.png" 
+               alt="Profile" 
+               class="rounded-circle me-2" 
+               width="32" 
+               height="32">
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel position-absolute start-0 mt-1 ms-3 shadow-lg" 
+    *ngIf="showNotificationsPanel"
+    style="width: 350px; z-index: 1000;">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-bell-fill me-2"></i>
+            Vos Notifications
+          </h5>
+          <button class="btn btn-sm btn-light" (click)="toggleNotificationsPanel()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+            <div *ngFor="let notif of notifications" 
+                 class="list-group-item list-group-item-action"
+                 [class.bg-light]="!notif.estVue"
+                 (click)="markAsRead(notif.id)">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="me-2">
+                  <i class="bi me-2" 
+                     [class.bi-exclamation-triangle-fill]="notif.Type === 'Annulation'"
+                     [class.bi-check-circle-fill]="notif.Type === 'Confirmation'"
+                     [class.bi-truck]="notif.Type === 'Livraison'"
+                     [class.bi-info-circle-fill]="notif.Type === 'Information'"></i>
+                  <strong>{{ notif.Type }}</strong>
+                </div>
+                <small class="text-muted">{{ notif.Date | date:'shortTime' }}</small>
+              </div>
+              <p class="mb-1 mt-2">{{ notif.Message }}</p>
+              <div *ngIf="notif.CommandeId" class="mt-2">
+                <button class="btn btn-sm btn-outline-primary" 
+                        (click)="viewOrder(notif.CommandeId); $event.stopPropagation()">
+                  <i class="bi bi-eye me-1"></i> Voir la commande
+                </button>
+              </div>
+            </div>
+            <div *ngIf="notifications.length === 0" class="list-group-item text-center text-muted py-4">
+              <i class="bi bi-bell-slash fs-4 d-block mb-2"></i>
+              Aucune notification pour le moment
+            </div>
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <button class="btn btn-sm btn-outline-secondary" (click)="markAllAsRead()">
+            <i class="bi bi-check-all me-1"></i> Tout marquer comme lu
+          </button>
+          <small class="text-muted">{{ notifications.length }} notification(s)</small>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content Container -->
     <div class="content-container p-4">
       <router-outlet></router-outlet>
+    </div>
+  </div>
+  
+  <!-- Chat Assistant Widget -->
+  <div class="chat-assistant-container position-fixed" [class.open]="chatOpen">
+    <!-- Chat Icon (when closed) -->
+    <div class="chat-icon" *ngIf="!chatOpen" (click)="toggleChat()">
+      <i class="bi bi-robot fs-4"></i>
+    </div>
+    
+    <!-- Chat Window (when open) -->
+    <div class="chat-window bg-white shadow-lg" *ngIf="chatOpen">
+      <div class="chat-header d-flex justify-content-between align-items-center p-3 bg-primary text-white">
+        <h5 class="mb-0">
+          <i class="bi bi-robot me-2"></i>
+          Assistant Virtuel
+        </h5>
+        <button class="btn btn-close btn-close-white" (click)="closeChat()" aria-label="Fermer le chat"></button>
+      </div>
+      
+      <div class="chat-body">
+        <div class="messages p-3">
+          <div *ngFor="let msg of chatMessages" 
+               [class.user-message]="msg.sender === 'user'"
+               [class.assistant-message]="msg.sender === 'assistant'"
+               class="message mb-3 p-3 rounded">
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi me-2" 
+                 [class.bi-person-fill]="msg.sender === 'user'"
+                 [class.bi-robot]="msg.sender === 'assistant'"></i>
+              <strong>{{ msg.sender === 'user' ? 'Vous' : 'Assistant' }}</strong>
+            </div>
+            <div>{{ msg.content }}</div>
+          </div>
+          <div *ngIf="loading" class="loading-indicator text-center p-2">
+            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+            <span>L'assistant réfléchit...</span>
+          </div>
+        </div>
+        
+        <!-- Suggested Questions -->
+        <div class="suggested-questions p-3 border-top" *ngIf="chatMessages.length <= 2">
+          <h6 class="mb-2 text-muted">Questions fréquentes :</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <button *ngFor="let question of suggestedQuestions"
+                    class="btn btn-outline-primary btn-sm py-1 px-3"
+                    (click)="selectQuestion(question)">
+              {{ question }}
+            </button>
+          </div>
+        </div>
+        
+        <div class="input-group p-3 border-top">
+          <input type="text" 
+                 class="form-control" 
+                 [(ngModel)]="userMessage" 
+                 placeholder="Posez votre question..." 
+                 (keyup.enter)="sendMessage()">
+          <button class="btn btn-primary" 
+                  (click)="sendMessage()" 
+                  [disabled]="loading || !userMessage.trim()">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
